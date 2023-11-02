@@ -1,61 +1,102 @@
-const Avatar = () => {
-  return <div className="flex w-14 h-14 bg-pink-600 rounded-full"></div>;
-};
+import React, { ReactNode } from "react";
+import { cn } from "utils/index";
 
-const CircleList = () => {
+const Avatar: React.FC = () => (
+  <div className="flex w-14 h-14 bg-pink-600 rounded-full"></div>
+);
+
+interface CircleProps {
+  className?: string;
+}
+
+const Circle: React.FC<CircleProps> = ({ className }) => (
+  <div className={cn("w-6 h-6 bg-pink-400 rounded-full", className)}></div>
+);
+
+const CircleList: React.FC = () => (
+  <div className="flex gap-2">
+    <Circle />
+    <Circle />
+  </div>
+);
+
+const Title: React.FC = () => (
+  <h1 className="text-2xl font-bold">Avatar Name</h1>
+);
+
+const Description: React.FC = () => (
+  <p className="text-center sm:text-start">
+    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugiat sed odio
+    fugit culpa quo veniam ullam cumque. Assumenda, animi omnis.
+  </p>
+);
+
+const Card = () => {
   return (
-    <div className="flex gap-2">
-      <div className="w-4 h-4 bg-pink-400 rounded-full"></div>
-      <div className="w-4 h-4 bg-pink-400 rounded-full"></div>
+    <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
+      <Avatar />
+      <div className="flex-1 mx-auto flex flex-col justify-center items-center gap-2 sm:items-start">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+          <Title />
+          <CircleList />
+        </div>
+        <Description />
+      </div>
     </div>
   );
 };
 
-const Title = () => {
-  return <h1>tripool</h1>;
-};
-
-const Description = () => {
-  return (
-    <p>
-      Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fugiat sed odio
-      fugit culpa quo veniam ullam cumque. Assumenda, animi omnis.
-    </p>
-  );
-};
-
-function App() {
-  return (
-    <main>
-      <section className="container mx-auto text-white rounded border border-red-300 p-10">
-        <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
-          <Avatar />
-          <div className="flex-1 mx-auto flex flex-col justify-center items-center gap-2 bg-pink-900">
-            <Title />
-            <CircleList />
-            <Description />
-          </div>
-          <div className="grid grid-rows-3 gap-4 w-full">
-            {/* 第一行：三個等寬的盒子 */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-blue-500 p-4">1</div>
-              <div className="bg-blue-500 p-4">2</div>
-              <div className="bg-blue-500 p-4">3</div>
-            </div>
-
-            {/* 第二行：一個與上面等寬的盒子，另一个佔滿剩餘空間 */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-1 bg-green-500 p-4">4</div>
-              <div className="col-span-2 bg-green-500 p-4">5</div>
-            </div>
-
-            {/* 第三行：一個佔滿全部宽度的盒子 */}
-            <div className="bg-red-500 p-4">6</div>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
+interface GridBoxProps {
+  children: ReactNode;
+  span?: number;
+  color?: string;
+  className?: string;
 }
+
+const GridBox: React.FC<GridBoxProps> = ({
+  children,
+  span,
+  color,
+  className,
+}) => {
+  const spanClass = cn({ [`col-span-${span}`]: span });
+  const colorClass = cn({ [`bg-${color}-500`]: color, "bg-gray-300": !color });
+  const classes = cn("p-4", spanClass, colorClass, "text-white", className);
+
+  return <div className={classes}>{children}</div>;
+};
+
+const GridBoxes: React.FC = () => (
+  <>
+    <div className="grid grid-cols-3 gap-4">
+      <GridBox color="indigo">1</GridBox>
+      <GridBox color="indigo">2</GridBox>
+      <GridBox color="indigo">3</GridBox>
+    </div>
+    <div className="grid grid-cols-3 gap-4">
+      <GridBox span={1} color="teal">
+        4
+      </GridBox>
+      <GridBox span={2} color="teal">
+        5
+      </GridBox>
+    </div>
+    <GridBox color="purple" className="w-full">
+      6
+    </GridBox>
+  </>
+);
+
+const App: React.FC = () => (
+  <main className="flex justify-center items-center p-4">
+    <section className="container-sm mx-auto text-white rounded border border-red-300 p-10">
+      <div className="flex flex-col gap-6">
+        <Card />
+        <hr />
+        <GridBoxes />
+      </div>
+    </section>
+  </main>
+);
 
 export default App;
